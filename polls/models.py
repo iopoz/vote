@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils import timezone
+import datetime
 
 NEW = 'new'
 INP = 'inp'
@@ -22,14 +24,19 @@ class Question(models.Model):
     def __str__(self):
         return self.question_text
 
-    def __next_status(self):
+
+    def was_published_recently(self):
+        now = timezone.now()
+        return now - datetime.timedelta(days=1) <= self.pub_date <= now
+
+    def next_status(self):
         if self.state == NEW:
             return INP
         elif self.state == INP:
             return CLOSED
 
-    __next_status.short_description = "Status"
-    next_status = property(__next_status)
+    next_status.short_description = "Status"
+
 
 
 class Choice(models.Model):
