@@ -22,6 +22,15 @@ class Question(models.Model):
     def __str__(self):
         return self.question_text
 
+    def __next_status(self):
+        if self.state == NEW:
+            return INP
+        elif self.state == INP:
+            return CLOSED
+
+    __next_status.short_description = "Status"
+    next_status = property(__next_status)
+
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
