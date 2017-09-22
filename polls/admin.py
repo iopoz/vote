@@ -25,7 +25,7 @@ STATE_CHOICES_FOR_CLOSED = (
 class StatusForm(forms.ModelForm):
     class Meta:
         model = Question
-        fields = ['state','question_text', 'pub_date']
+        fields = ['state', 'question_text', 'pub_date']
 
     def __init__(self, *args, **kwargs):
         super(StatusForm, self).__init__(*args, **kwargs)
@@ -44,15 +44,13 @@ class StatusForm(forms.ModelForm):
 
         self.fields['state'].choices = next_status
 
+
 class InLineForm(forms.BaseInlineFormSet):
     def __init__(self, *args, **kwargs):
         super(InLineForm, self).__init__(*args, **kwargs)
         if self.instance.state != 'new':
             self.can_delete = False
             self.can_add_related = False
-
-
-
 
 
 class ChoiceInline(admin.TabularInline):
@@ -68,17 +66,6 @@ class ChoiceInline(admin.TabularInline):
                 return super(ChoiceInline, self).get_readonly_fields(request, obj)
         except AttributeError:
             return super(ChoiceInline, self).get_readonly_fields(request, obj)
-
-    def change_view(self, request, object_id, extra_context=None):
-        extra_context = extra_context or {}
-
-        if Question.objects.get(id=object_id).state != 'new':
-            self.can_delete = False
-            self.has_add_permission = False
-
-        return super(ChoiceInline, self).change_view(request, object_id, extra_context=extra_context)
-
-
 
 
 class QuestionAdmin(admin.ModelAdmin):
@@ -100,8 +87,6 @@ class QuestionAdmin(admin.ModelAdmin):
                 return super(QuestionAdmin, self).get_readonly_fields(request, obj)
         except AttributeError:
             return super(QuestionAdmin, self).get_readonly_fields(request, obj)
-
-
 
     inlines = [ChoiceInline]
 
