@@ -18,18 +18,9 @@ STATE_CHOICES_FOR_NEW = (
     (INP, 'in progress'),
 )
 
-STATE_CHOICES_FOR_INP = (
-    (INP, 'in progress'),
-    (CLOSED, 'closed question'),
-)
-
-STATE_CHOICES_FOR_CLOSED = (
-    (CLOSED, 'closed question'),
-)
-
 
 class Question(models.Model):
-    state = models.CharField(max_length=10, choices=STATE_CHOICES_FOR_NEW, default=STATE_CHOICES_FOR_NEW)
+    state = models.CharField(max_length=10, choices=STATE_CHOICES, default=STATE_CHOICES_FOR_NEW)
     question_text = models.CharField(max_length=200)
     pub_date = models.DateTimeField('date published')
 

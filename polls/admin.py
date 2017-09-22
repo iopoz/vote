@@ -44,16 +44,26 @@ class StatusForm(forms.ModelForm):
 
         self.fields['state'].choices = next_status
 
+class InLineForm(forms.BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        super(InLineForm, self).__init__(*args, **kwargs)
+        if self.instance.state != 'new':
+            self.can_delete = False
+            self.can_add_related = False
+
+
+
+
 
 class ChoiceInline(admin.TabularInline):
     model = Choice
-    extra = 3
+    extra = 0
+    formset = InLineForm
 
-    # readonly_fields = ('choice_text',)
     def get_readonly_fields(self, request, obj=None):
         try:
             if obj.state != 'new':
-                return ('choice_text',)  # ('question_text', 'pub_date', )
+                return 'choice_text',
             else:
                 return super(ChoiceInline, self).get_readonly_fields(request, obj)
         except AttributeError:
@@ -63,15 +73,15 @@ class ChoiceInline(admin.TabularInline):
         extra_context = extra_context or {}
 
         if Question.objects.get(id=object_id).state != 'new':
-            extra_context['has_delete_permission'] = False
-            extra_context['show_delete'] = False
-            extra_context['has_add_permission'] = False
+            self.can_delete = False
+            self.has_add_permission = False
+
         return super(ChoiceInline, self).change_view(request, object_id, extra_context=extra_context)
 
 
+
+
 class QuestionAdmin(admin.ModelAdmin):
-    # change_form_template = os.path.abspath(
-    #     os.path.join(os.path.dirname(__file__), 'templates', 'admin', 'new_change_form.html'))
     form = StatusForm
 
     def change_view(self, request, object_id, extra_context=None):
@@ -91,11 +101,6 @@ class QuestionAdmin(admin.ModelAdmin):
         except AttributeError:
             return super(QuestionAdmin, self).get_readonly_fields(request, obj)
 
-    # def next_status(self, obj):
-    #     if obj.state == 'new':
-    #         return
-    # next_status.short_name = 'Statuses'
-    # next_status.empty_value_display = '???'
 
 
     inlines = [ChoiceInline]

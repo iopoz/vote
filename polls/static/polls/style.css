@@ -3,5 +3,10 @@ li a {
 }
 
 body {
-    background: white url("../images/backgraund.gif") no-repeat right bottom;
+    background: white url("../images/poll-2.jpg") no-repeat center center fixed;
+    /*-webkit-background-size: cover;*/
+    /*-moz-background-size: cover;*/
+    /*-o-background-size: cover;*/
+    background-size: cover;
+
 }
